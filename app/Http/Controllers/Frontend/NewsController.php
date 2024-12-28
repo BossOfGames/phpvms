@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Contracts\Controller;
+use App\Models\News;
 use App\Services\NewsService;
 use Illuminate\Http\Request;
 
@@ -13,7 +14,15 @@ class NewsController extends Controller
     }
     public function index()
     {
-        $posts = News::paginate(20);
+        // if the user is not logged in, only show public posts
+        $postsQuery = News::where('visible', true)->orderBy('created_at', 'desc');
+
+        if (!auth()->check()) {
+            $postsQuery->where('public', true);
+        }
+
+        $posts = $postsQuery->paginate(10);
+
         return view('frontend.news.index', [
             'posts' => $posts,
         ]);
@@ -25,7 +34,7 @@ class NewsController extends Controller
             abort(404);
         }
         // If the post is not published, or if the post is private and the user is not logged in, abort
-        if (!$post->is_published && (!$post->public && !auth()->check())) {
+        if (!$post->visible && (!$post->public && !auth()->check())) {
             abort(404);
         }
 

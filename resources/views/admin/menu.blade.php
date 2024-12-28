@@ -102,7 +102,21 @@
     </ul>
   </div>
 </li>
+<li>
+  <a data-toggle="collapse" href="#cms_menu" class="menu cms_menu" aria-expanded="true">
+    <h5>cms&nbsp;<b class="pe-7s-angle-right"></b></h5>
+  </a>
 
+  <div class="collapse" id="cms_menu" aria-expanded="true">
+    <ul class="nav">
+      @ability('admin', 'addons')
+      @foreach($moduleSvc->getAdminLinks() as &$link)
+        <li><a href="{{ url($link['url']) }}"><i class="{{ $link['icon'] }}"></i>{{ $link['title'] }}</a></li>
+      @endforeach
+      @endability
+    </ul>
+  </div>
+</li>
 <li>
   <a data-toggle="collapse" href="#addons_menu" class="menu addons_menu" aria-expanded="true">
     <h5>addons&nbsp;<b class="pe-7s-angle-right"></b></h5>

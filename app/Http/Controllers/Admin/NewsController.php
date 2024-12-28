@@ -6,6 +6,7 @@ use App\Contracts\Controller;
 use App\Http\Requests\CreatePageRequest;
 use App\Http\Requests\UpdatePageRequest;
 use App\Models\News;
+use App\Repositories\NewsRepository;
 use App\Repositories\PageRepository;
 use App\Services\NewsService;
 use Illuminate\Http\RedirectResponse;
@@ -16,10 +17,12 @@ use Laracasts\Flash\Flash;
 class NewsController extends Controller
 {
     /**
-     * @param PageRepository $pageRepo
+     * @param NewsService $newsService
+     * @param NewsRepository $newsRepo
      */
     public function __construct(
         public NewsService $newsService,
+        private readonly NewsRepository $newsRepo
     ) {
     }
 
@@ -42,7 +45,7 @@ class NewsController extends Controller
      */
     public function create(): View
     {
-        return view('admin.pages.create');
+        return view('admin.news.create');
     }
 
     /**
@@ -60,11 +63,11 @@ class NewsController extends Controller
         $this->newsService->addNews($input);
 
         Flash::success('News saved successfully.');
-        return redirect(route('admin.pages.index'));
+        return redirect(route('admin.news.index'));
     }
 
     /**
-     * Display the specified page
+     * Display the specified news post.
      *
      * @param int $id
      *
@@ -72,15 +75,10 @@ class NewsController extends Controller
      */
     public function show(int $id): View
     {
-        $pages = $this->pageRepo->findWithoutFail($id);
+        $post = $this->newsRepo->findWithoutFail($id);
 
-        if (empty($pages)) {
-            Flash::error('Page not found');
-            return redirect(route('admin.page.index'));
-        }
-
-        return view('admin.pages.show', [
-            'pages' => $pages,
+        return view('admin.news.show', [
+            'post' => $post,
         ]);
     }
 
@@ -93,14 +91,14 @@ class NewsController extends Controller
      */
     public function edit(int $id): RedirectResponse|View
     {
-        $page = $this->pageRepo->findWithoutFail($id);
+        $page = $this->newsRepo->findWithoutFail($id);
 
         if (empty($page)) {
             Flash::error('Page not found');
-            return redirect(route('admin.pages.index'));
+            return redirect(route('admin.news.index'));
         }
 
-        return view('admin.pages.edit', [
+        return view('admin.news.edit', [
             'page' => $page,
         ]);
     }
@@ -117,17 +115,17 @@ class NewsController extends Controller
      */
     public function update(int $id, UpdatePageRequest $request): RedirectResponse
     {
-        $page = $this->pageRepo->findWithoutFail($id);
+        $page = $this->newsRepo->findWithoutFail($id);
 
         if (empty($page)) {
-            Flash::error('page not found');
-            return redirect(route('admin.pages.index'));
+            Flash::error('news not found');
+            return redirect(route('admin.news.index'));
         }
 
-        $this->pageRepo->update($request->all(), $id);
+        $this->newsService->updateNews($request->all());
 
-        Flash::success('pages updated successfully.');
-        return redirect(route('admin.pages.index'));
+        Flash::success('news updated successfully.');
+        return redirect(route('admin.news.index'));
     }
 
     /**
@@ -139,16 +137,16 @@ class NewsController extends Controller
      */
     public function destroy(int $id): RedirectResponse
     {
-        $pages = $this->pageRepo->findWithoutFail($id);
+        $pages = $this->newsRepo->findWithoutFail($id);
 
         if (empty($pages)) {
-            Flash::error('Page not found');
-            return redirect(route('admin.pages.index'));
+            Flash::error('News post not found');
+            return redirect(route('admin.news.index'));
         }
 
-        $this->pageRepo->delete($id);
+        $this->newsRepo->delete($id);
 
-        Flash::success('page deleted successfully.');
-        return redirect(route('admin.pages.index'));
+        Flash::success('News post deleted successfully.');
+        return redirect(route('admin.news.index'));
     }
 }

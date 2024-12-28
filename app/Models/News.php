@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Contracts\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Kyslik\ColumnSortable\Sortable;
 
@@ -19,6 +20,7 @@ class News extends Model
 {
     use HasFactory;
     use Notifiable;
+    use SoftDeletes;
     use Sortable;
 
     public $table = 'news';
@@ -27,6 +29,11 @@ class News extends Model
         'user_id',
         'subject',
         'body',
+        'public',
+        'published_at',
+        'stub',
+        'visible',
+        'slug',
     ];
 
     public static $rules = [
