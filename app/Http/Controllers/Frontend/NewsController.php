@@ -5,13 +5,13 @@ namespace App\Http\Controllers\Frontend;
 use App\Contracts\Controller;
 use App\Models\News;
 use App\Services\NewsService;
-use Illuminate\Http\Request;
 
 class NewsController extends Controller
 {
     public function __construct(public NewsService $newsService)
     {
     }
+
     public function index()
     {
         // if the user is not logged in, only show public posts
@@ -27,6 +27,7 @@ class NewsController extends Controller
             'posts' => $posts,
         ]);
     }
+
     public function show($id)
     {
         $post = News::find($id);

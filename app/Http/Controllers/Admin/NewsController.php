@@ -7,7 +7,6 @@ use App\Http\Requests\CreatePageRequest;
 use App\Http\Requests\UpdatePageRequest;
 use App\Models\News;
 use App\Repositories\NewsRepository;
-use App\Repositories\PageRepository;
 use App\Services\NewsService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -17,7 +16,7 @@ use Laracasts\Flash\Flash;
 class NewsController extends Controller
 {
     /**
-     * @param NewsService $newsService
+     * @param NewsService    $newsService
      * @param NewsRepository $newsRepo
      */
     public function __construct(
